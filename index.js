@@ -17,7 +17,9 @@ async function run() {
     try {
         const myServiceCollection = client.db('serviceDb').collection('services');
         const myAllServiceCollection = client.db('serviceDb').collection('allServices');
-         app.get('/services', async (req, res) => {
+        const reviewCollection = client.db('serviceDb').collection('review');
+        
+        app.get('/services', async (req, res) => {
              const query = {}
              const cursor = myServiceCollection.find(query);
              const myServices = await cursor.limit(3).toArray();
@@ -35,6 +37,12 @@ async function run() {
                 const allService = await myServiceCollection.findOne(query);
                 res.send(allService);
           });
+
+            app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        });
 
     }
     finally {
