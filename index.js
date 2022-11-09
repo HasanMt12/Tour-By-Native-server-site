@@ -38,11 +38,58 @@ async function run() {
                 res.send(allService);
           });
 
-            app.post('/review', async (req, res) => {
+
+        app.post('/review', async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             res.send(result);
-        });
+          });
+
+          app.get('/review', async (req, res) => {
+            let query = {};
+
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+          });
+
+        //   app.get('/review', async (req, res) => {
+        //     let query = {};
+
+        //     if (req.query.serviceName) {
+        //         query = {
+        //             serviceName: req.query.serviceName
+        //         }
+        //     }
+
+        //     const cursor = reviewCollection.find(query);
+        //     const review = await cursor.toArray();
+        //     res.send(review);
+        //   });
+
+
+        //   app.get('/review', async (req, res) => {
+              
+        //           const ids = req.body;
+        //     const objectIds = ids.map(id => ObjectId(id))
+        //     const query = {_id: {$in: objectIds}};
+        //         const cursor = reviewCollection.find(query);
+        //           const allService = await cursor.toArray();
+        //         res.send(allService);
+        //   });
+
+           app.delete('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result);
+        })
 
     }
     finally {
